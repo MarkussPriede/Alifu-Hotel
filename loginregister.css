@@ -1,0 +1,119 @@
+/* General Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+a {
+  color: #333;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+header {
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+nav ul {
+  display: flex;
+  justify-content: flex-end;
+}
+
+nav ul li {
+  margin-left: 2rem;
+}
+
+nav ul li:first-child {
+  margin-left: 0;
+}
+
+nav ul li a {
+  font-weight: 500;
+}
+
+main {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #555;
+}
+
+.message {
+  text-align: center;
+}
+
+/* Login Page Styles */
+
+.login {
+  display: block;
+}
+
+.login form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login .message {
+  margin-top: 1rem;
+}
+
+/* Registration Page Styles */
+
+.register {
+  display: block;
+}
+
+
+.register form {
+  display: flex;
+  flex-direction: column;
+}
+
+.register .message {
+  margin-top: 1rem;
+}

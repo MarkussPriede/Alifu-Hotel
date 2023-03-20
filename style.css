@@ -1,0 +1,169 @@
+/* Global styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #333;
+  text-decoration: none;
+}
+
+/* Header styles */
+header {
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+nav ul {
+  display: flex;
+}
+
+nav li {
+  margin-left: 1rem;
+}
+
+nav a:hover {
+  color: #0071c5;
+}
+
+.hero {
+  background-image: url(hero.jpg);
+  background-position: center;
+  background-size: cover;
+  height: 50vh; /* set a smaller height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: black;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.button {
+  background-color: #0071c5;
+  color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 2rem;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #004e8c;
+}
+
+/* Main content styles */
+main {
+  margin-top: 40vh; /* adjust margin-top to match the height of the .hero div */
+  padding: 2rem;
+  background-color: #fff;
+  color: #333;
+  padding-top: 10rem; /* add padding to the top */
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.room-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.room {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  text-align: center;
+}
+
+.room img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.room h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.room p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.amenity-list {
+  display: flex;
+  justify-content: space-between;
+}
+
+.amenity {
+  flex-basis: 30%;
+  text-align: center;
+}
+
+.amenity img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.amenity h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.amenity p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.review-list {
+  display: flex;
+  justify-content: space-between;
+}
+
+.review {
+  flex-basis: 30%;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  text-align: center;
+}
+
+.review img {
+  border

@@ -1,39 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Hotel Reservation</title>
-</head>
-<body>
+    <title>Alifu | Book your stay today</title>
+    <link rel="stylesheet" href="style.css">
+	<script src="script.js"></script>
+  </head>
+  <body>
     <header>
-        <h1>Hotel Reservation</h1>
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Rooms</a></li>
+          <li><a href="#">Amenities</a></li>
+          <li><a href="#">Reviews</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="hero">
+        <h1>Discover Luxury at Alifu</h1>
+        <p>Book your stay today and enjoy our world-class amenities</p>
+        <a href="#" class="button">Book Now</a>
+      </div>
     </header>
     <main>
-        <form action="backend/reserve.php" method="POST" id="reservation-form">
-            <label for="name">Name:</label>
-            <input type="text" name="name" id="name" required>
-
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" required>
-
-            <label for="checkin">Check-in:</label>
-            <input type="date" name="checkin" id="checkin" required>
-
-            <label for="checkout">Check-out:</label>
-            <input type="date" name="checkout" id="checkout" required>
-
-            <label for="room">Room type:</label>
-            <select name="room" id="room" required>
-                <option value="">Select a room type</option>
-                <option value="single">Single</option>
-                <option value="double">Double</option>
-                <option value="suite">Suite</option>
-            </select>
-
-            <input type="submit" value="Reserve">
-        </form>
+      <section class="rooms">
+        <h2>Our Rooms</h2>
+        <div class="room-list">
+          <div class="room">
+            <img src="room1.jpg" alt="Room 1">
+            <h3>Deluxe Room</h3>
+            <p>Starting from $200/night</p>
+            <a href="#" class="button">Book Now</a>
+          </div>
+          <div class="room">
+            <img src="room2.jpg" alt="Room 2">
+            <h3>Premium Room</h3>
+            <p>Starting from $300/night</p>
+            <a href="#" class="button">Book Now</a>
+          </div>
+          <div class="room">
+            <img src="room3.jpg" alt="Room 3">
+            <h3>Suite Room</h3>
+            <p>Starting from $500/night</p>
+            <a href="#" class="button">Book Now</a>
+          </div>
+        </div>
+      </section>
+      <section class="amenities">
+        <h2>Our Amenities</h2>
+        <div class="amenity-list">
+          <div class="amenity">
+            <img src="pool.jpg" alt="Pool">
+            <h3>Swimming Pool</h3>
+            <p>Relax and cool off in our Olympic-sized pool</p>
+          </div>
+          <div class="amenity">
+            <img src="gym.jpg" alt="Gym">
+            <h3>Fitness Center</h3>
+            <p>Stay fit and healthy with our state-of-the-art gym</p>
+          </div>
+          <div class="amenity">
+            <img src="spa.jpg" alt="Spa">
+            <h3>Spa &amp; Wellness</h3>
+            <p>Indulge in a luxurious spa treatment for ultimate relaxation</p>
+          </div>
+        </div>
+      </section>
+      <section class="reviews">
+        <h2>Our Reviews</h2>
+        <div class="review-list">
+          <div class="review">
+            <img src="user1.jpg" alt="User 1">
+            <h3>John Doe</h3>
+            <p>"The hotel was amazing. The staff was very friendly and helpful. The room was spacious and clean."</p>
+          </div>
+          <div class="review">
+            <img src="user2.jpg" alt="User 2"> 
+            <h3>Jane Smith</h3>
+            <p>"I had a wonderful stay at this hotel. The amenities were top-notch and the room was very comfortable."</p>
+          </div>
+          <div class="review">
+            <img src="user3.jpg" alt="User 3">
+            <h3>Michael Johnson</h3>
+            <p>"I highly recommend this hotel. The staff was very attentive and the facilities were excellent."</p>
+          </div>
+        </div>
+      </section>
     </main>
-</body>
+    <footer>
+      <p>&copy; 2023 Alifu. All rights reserved.</p>
+    </footer>
+  </body>
 </html>
+
