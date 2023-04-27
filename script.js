@@ -1,15 +1,24 @@
-const hero = document.querySelector('.hero');
+window.onscroll = function () {
+  var hero = document.getElementById("hero");
+  var scrollPos = window.scrollY;
+  var windowHeight = window.innerHeight;
+  var opacity = 1 - scrollPos / (windowHeight * 0.4); // Adjust the factor to control the rate of text disappearance
+  var minHeight = 0; // Minimum height you want the hero section to reach before disappearing
+  var initialHeroHeight = windowHeight * 0.5; // Set this to the initial height of the hero section
 
-window.addEventListener('scroll', () => {
-  const scrollPosition = window.scrollY;
-  const minHeight = 50;
-  const maxHeight = 80;
-  
-  // Calculate new height based on scroll position
-  const height = Math.max(maxHeight - scrollPosition / 10, minHeight);
-  
-  // Set new height
-  hero.style.height = `${height}vh`;
-});
+  if (opacity >= 0) {
+    hero.style.opacity = opacity;
+  }
 
+  var newHeight = initialHeroHeight - scrollPos;
 
+  if (newHeight > minHeight) {
+    hero.style.height = newHeight + "px";
+  } else {
+    hero.style.height = minHeight + "px";
+  }
+};
+
+window.onbeforeunload = function () {
+  window.scrollTo(0, 0);
+};

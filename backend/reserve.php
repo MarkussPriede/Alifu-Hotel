@@ -1,12 +1,6 @@
 <?php
 
-// Establish a connection with the database
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "alifu";
-
-$conn = mysqli_connect($servername, $username, $password, $dbname);
+require_once 'db_connection.php';
 
 // Check connection
 if (!$conn) {

@@ -1,6 +1,16 @@
 <?php
 require_once "db_connection.php";
 session_start();
+
+// if the administrator value of the user is set to 1, set the session variable to "admin"
+if(isset($_SESSION['user_id'])) {
+  $query = "SELECT * FROM users WHERE id = '".$_SESSION['user_id']."'";
+  $result = mysqli_query($conn, $query);
+  $row = mysqli_fetch_assoc($result);
+  if($row['administrator'] == 1) {
+    $_SESSION['admin'] = "admin";
+  }
+}
 ?>
 
 <!DOCTYPE html>
@@ -10,14 +20,13 @@ session_start();
     <title>Alifu | Book your stay today</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap">
-	<script src="script.js"></script>
   </head>
   <body>
   <header>
       <nav>
         <ul>
           <li><a href="index.php">Home</a></li>
-          <li><a href="#">Rooms</a></li>
+          <li><a href="rooms.php">Rooms</a></li>
           <li><a href="#">Amenities</a></li>
           <li><a href="#">Reviews</a></li>
           <li><a href="#">Contact</a></li>
@@ -39,7 +48,7 @@ session_start();
           </li>
         </ul>
       </nav>
-      <div class="hero">
+      <div class="hero" id="hero">
         <h1>Discover Luxury at Alifu</h1>
         <p>Book your stay today and enjoy our world-class amenities</p>
         <a href="#" class="button">Book Now</a>
@@ -113,5 +122,6 @@ session_start();
     <footer>
       <p>&copy; 2023 Alifu. All rights reserved.</p>
     </footer>
+    <script src="script.js"></script>
   </body>
 </html>

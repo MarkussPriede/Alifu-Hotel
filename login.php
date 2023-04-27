@@ -1,13 +1,15 @@
 <?php
-
 require_once 'db_connection.php';
 session_start();
 
 if (isset($_POST['login'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
-    $sql = "SELECT * FROM users WHERE email='$email'";
-    $result = $conn->query($sql);
+    $sql = "SELECT * FROM users WHERE email=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
     if ($result->num_rows == 1) {
         $user = $result->fetch_assoc();
         if (password_verify($password, $user['password'])) {
@@ -25,8 +27,6 @@ if (isset($_POST['login'])) {
 $conn->close();
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -34,7 +34,7 @@ $conn->close();
     <title>Login | Alifu Hotel</title>
     <link rel="stylesheet" href="css/loginregister.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap">
-	<script src="script.js"></script>
+    <script src="script.js"></script>
   </head>
   <body>
     <header>

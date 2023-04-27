@@ -73,6 +73,7 @@ nav ul li a {
   background-position: center;
   background-size: cover;
   height: 50vh;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -133,6 +134,10 @@ h2 {
   text-align: center;
 }
 
+.room .button {
+  margin-top: 1.5rem;
+}
+
 .room img {
   max-width: 80%;
   height: auto;
@@ -141,12 +146,13 @@ h2 {
 
 .room h3 {
   font-size: 1.5rem;
+  margin-top: 0.25rem;
   margin-bottom: 0.5rem;
 }
 
 .room p {
   font-size: 1.2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .amenity-list {

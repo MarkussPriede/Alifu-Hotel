@@ -12,14 +12,14 @@ if(isset($_POST['register'])) {
     // Hash the password using Bcrypt algorithm
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-    $sql = "INSERT INTO users (name, surname, email, personal_id, phone_number, password)
-    VALUES ('$name', '$surname', '$email', '$personal_id', '$phone_number', '$hashed_password')";
+    $stmt = $conn->prepare("INSERT INTO users (name, surname, email, personal_id, phone_number, password) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssss", $name, $surname, $email, $personal_id, $phone_number, $hashed_password);
 
-    if($conn->query($sql) === TRUE) {
+    if($stmt->execute()) {
         header('Location: login.php');
         exit();
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error: " . $stmt->error;
     }
 }
 
