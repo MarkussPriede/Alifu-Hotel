@@ -145,23 +145,15 @@ button:hover {
   margin-top: 1rem;
 }
 
-.footer {
+footer {
   background-color: #333;
   color: #fff;
   padding: 2rem;
   text-align: center;
 }
 
-.footer p {
+footer p {
   margin-bottom: 0.5rem;
-}
-
-.footer a {
-  color: #fff;
-}
-
-.footer a:hover {
-  color: #0071c5;
 }
 
 @media (max-width: 600px) {
@@ -188,4 +180,3 @@ button:hover {
     font-size: 0.9rem;
   }
 }
-``

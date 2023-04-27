@@ -80,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <head>
     <meta charset="UTF-8">
     <title>Reset Your Password | Alifu</title>
-    <link rel="stylesheet" href="loginregister.css">
+    <link rel="stylesheet" href="css/loginregister.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap">
 	<script src="script.js"></script>
   </head>

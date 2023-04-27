@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <head>
     <meta charset="UTF-8">
     <title>Profile | Alifu</title>
-    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="css/profile.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap">
   </head>
   <body>
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <li><a href="#">Amenities</a></li>
           <li><a href="#">Reviews</a></li>
           <li><a href="#">Contact</a></li>
-          <li><a href="logout.php">Logout</a></li>
+          <li><a href="backend/logout.php">Logout</a></li>
         </ul>
       </nav>
     </header>
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           $result = mysqli_query($conn, $query);
           $row = mysqli_fetch_assoc($result);
         ?>
-        <form action="update_profile.php" method="POST">
+        <form action="profile.php" method="POST">
           <div class="form-group">
             <label for="name">Name</label>
             <input type="text" name="name" id="name" value="<?php echo $row['name']; ?>" required>
