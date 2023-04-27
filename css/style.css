@@ -62,8 +62,14 @@ nav ul li a {
   background-color: #004e8c;
 }
 
+@media (max-width: 768px) {
+  .hero {
+    height: 70vh;
+  }
+}
+
 .hero {
-  background-image: url(/Alifu-Hotel/img/img1.jpg);
+  background-image: url(/Alifu-Hotel/img/img2edit.jpg);
   background-position: center;
   background-size: cover;
   height: 50vh;
@@ -79,12 +85,14 @@ nav ul li a {
   color: white;
   font-size: 3rem;
   margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .hero p {
   color: white;
   font-size: 1.5rem;
   margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .button {
@@ -126,7 +134,7 @@ h2 {
 }
 
 .room img {
-  max-width: 100%;
+  max-width: 80%;
   height: auto;
   margin-bottom: 1rem;
 }
@@ -142,12 +150,14 @@ h2 {
 }
 
 .amenity-list {
-  display: flex;
   justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .amenity {
-  flex-basis: 30%;
   text-align: center;
 }
 
@@ -168,12 +178,14 @@ h2 {
 }
 
 .review-list {
-  display: flex;
   justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .review {
-  flex-basis: 30%;
   border: 1px solid #ddd;
   padding: 1rem;
   text-align: center;
@@ -181,9 +193,8 @@ h2 {
 
 .review img {
   border-radius: 50%;
-  max-width: 100%;
+  max-width: 40%;
   height: auto;
-  margin-bottom: 1rem;
 }
 
 .review h3 {
@@ -213,4 +224,5 @@ footer a {
 
 footer a:hover {
   color: #0071c5;
+  text-decoration: underline;
 }
