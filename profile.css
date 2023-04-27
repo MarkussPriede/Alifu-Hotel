@@ -117,21 +117,75 @@ button:hover {
   margin-top: 1rem;
 }
 
-footer {
+/* Profile Page Styles */
+
+.profile {
+  display: block;
+}
+
+.profile .password-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile .password-form input[type="password"] {
+  margin-bottom: 1rem;
+}
+
+.profile .data-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile .data-form button {
+  margin-top: 1rem;
+}
+
+.profile .message {
+  margin-top: 1rem;
+}
+
+.footer {
   background-color: #333;
   color: #fff;
   padding: 2rem;
   text-align: center;
 }
 
-footer p {
+.footer p {
   margin-bottom: 0.5rem;
 }
 
-footer a {
+.footer a {
   color: #fff;
 }
 
-footer a:hover {
+.footer a:hover {
   color: #0071c5;
 }
+
+@media (max-width: 600px) {
+  nav ul li {
+    margin-left: 1rem;
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  input[type="email"],
+  input[type="password"],
+  input[type="text"] {
+    font-size: 0.9rem;
+  }
+
+  button {
+    font-size: 0.9rem;
+  }
+}
+``

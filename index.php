@@ -1,21 +1,34 @@
+<?php
+session_start();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <title>Alifu | Book your stay today</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap">
 	<script src="script.js"></script>
   </head>
   <body>
     <header>
       <nav>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Rooms</a></li>
-          <li><a href="#">Amenities</a></li>
-          <li><a href="#">Reviews</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
+      <ul>
+    <li><a href="index.php">Home</a></li>
+    <li><a href="#">Rooms</a></li>
+    <li><a href="#">Amenities</a></li>
+    <li><a href="#">Reviews</a></li>
+    <li><a href="#">Contact</a></li>
+    <?php if(!isset($_SESSION['user_id'])) { ?>
+    <li><a href="login.php" class="loginregisterbutton">Login</a></li>
+    <li><a href="register.php" class="loginregisterbutton">Register</a></li>
+    <?php } else { ?>
+    <li><a href="profile.php">My Profile</a></li>
+    <li><a href="backend/logout.php" class="loginregisterbutton">Logout</a></li>
+    <?php } ?>
+</ul>
       </nav>
       <div class="hero">
         <h1>Discover Luxury at Alifu</h1>
@@ -93,4 +106,3 @@
     </footer>
   </body>
 </html>
-
