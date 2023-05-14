@@ -120,7 +120,7 @@ if(isset($_SESSION['user_id'])) {
       </section>
     </main>
     <footer>
-      <p>&copy; 2023 Alifu. All rights reserved.</p>
+      <p>&copy; 2023 Alifu Hotel. All rights reserved.</p>
     </footer>
     <script src="script.js"></script>
   </body>

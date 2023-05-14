@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Prepare an update statement
         $sql = "UPDATE users SET password = ? WHERE email = ?";
         
-        if ($stmt = $mysqli->prepare($sql)) {
+        if ($stmt = $conn->prepare($sql)) {
             
             // Hash the password
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
@@ -60,70 +60,67 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("location: login.php");
                 exit();
             } else {
-                // Something went wrong
                 echo "Oops! Something went wrong. Please try again later.";
             }
             
-            // Close statement
             $stmt->close();
         }
     }
     
-    // Close connection
-    $mysqli->close();
+    $conn->close();
 }
 ?>
 
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <title>Reset Your Password | Alifu</title>
     <link rel="stylesheet" href="css/loginregister.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap">
-	<script src="script.js"></script>
-  </head>
-  <body>
+    <script src="script.js"></script>
+</head>
+<body>
     <header>
-      <nav>
-        <ul>
-          <li><a href="index.php">Home</a></li>
-          <li><a href="#">Rooms</a></li>
-          <li><a href="#">Amenities</a></li>
-          <li><a href="#">Reviews</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </nav>
+        <nav>
+            <ul>
+                <li><a href="index.php">Home</a></li>
+                <li><a href="#">Rooms</a></li>
+                <li><a href="#">Amenities</a></li>
+                <li><a href="#">Reviews</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
     </header>
     <main>
-      <section class="register">
-        <h2>Reset Your Password</h2>
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
-                <label>Email</label>
-                <input type="email" name="email" class="form-control" value="<?php echo $email; ?>">
-                <span class="help-block"><?php echo $email_err; ?></span>
-            </div>
-            <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
-                <label>New Password</label>
-                <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
-                <span class="help-block"><?php echo $password_err; ?></span>
-            </div>
-            <div class="form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>">
-                <label>Confirm New Password</label>
-            <input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">
-            <span class="help-block"><?php echo $confirm_password_err; ?></span>
-        </div>
-        <div class="form-group">
-            <input type="submit" class="btn btn-primary" value="Reset Password">
-            <a class="btn btn-link" href="index.php">Cancel</a>
-        </div>
-    </form>
-      </section>
-    </main>
-    <footer>
-      <p>&copy; 2023 Alifu. All rights reserved.</p>
-    </footer>
-  </body>
-</html>
+        <section class="register">
+            <h2>Reset Your Password</h2>
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                <div class="form-group <?php echo (!empty($email_err)) ? 'has-error' : ''; ?>">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" value="<?php echo $email; ?>">
+                    <span class="help-block"><?php echo $email_err; ?></span>
+                  </div>
+                  <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
+                  <label>New Password</label>
+                  <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
+                  <span class="help-block"><?php echo $password_err; ?></span>
+                </div>
+                  <div class="form-group <?php echo (!empty($confirm_password_err)) ? 'has-error' : ''; ?>">
+                  <label>Confirm New Password</label>
+                  <input type="password" name="confirm_password" class="form-control" value="<?php echo $confirm_password; ?>">
+                  <span class="help-block"><?php echo $confirm_password_err; ?></span>
+                </div>
+                  <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Reset Password">
+                  <a class="btn btn-link" href="index.php">Cancel</a>
+                </div>
+                </form>
+                </section>
+                </main>
+                  <footer>
+                    <p>© 2023 Alifu Hotel. All rights reserved.</p>
+                </footer>
+                </body>
+                  </html>

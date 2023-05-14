@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </header>
     <main>
       <section class="profile">
-        <h2>Profile</h2>
+        <h2>Edit profile</h2>
         <?php
           // Fetch user data from the database
           $query = "SELECT * FROM users WHERE id = ".$_SESSION['user_id'];
@@ -97,11 +97,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="password" name="password" id="password" required>
           </div>
           <button type="submit" name="update">Update</button>
+          <button type="submit" name="delete" id="buttondelete">Delete Profile</button>
         </form>
       </section>
     </main>
     <footer>
-      <p>&copy; 2023 Hotel Name. All rights reserved.</p>
+      <p>&copy; 2023 Alifu Hotel. All rights reserved.</p>
     </footer>
   </body>
 </html>
