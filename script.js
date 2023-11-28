@@ -8,6 +8,11 @@ window.onscroll = function () {
 
   if (opacity >= 0) {
     hero.style.opacity = opacity;
+    hero.style.display = "flex";
+  }
+
+  if (opacity <= 0) {
+    hero.style.display = "none";
   }
 
   var newHeight = initialHeroHeight - scrollPos;
