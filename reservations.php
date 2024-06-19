@@ -1,128 +1,194 @@
 <?php
-require_once('db_connection.php');
-
+include 'db_connection.php';
 session_start();
-if (!isset($_SESSION['user_id']) || !$_SESSION['admin']) {
+
+// Redirect to login page if user is not logged in
+if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
 
-// Retrieve reservations from the database
-$query = "SELECT * FROM reservations";
-$result = mysqli_query($conn, $query);
+// Function to check date conflicts
+function isRoomAvailable($apartmentId, $checkIn, $checkOut) {
+    global $conn;
+    $sql = "SELECT * FROM reservations 
+            WHERE apartment_id = ? 
+            AND status != 'Cancelled'
+            AND (
+                (check_in_date <= ? AND check_out_date >= ?) 
+                OR (check_in_date <= ? AND check_out_date >= ?)
+                OR (check_in_date >= ? AND check_out_date <= ?)
+            )";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('issssss', $apartmentId, $checkOut, $checkIn, $checkOut, $checkIn, $checkIn, $checkOut);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->num_rows == 0;
+}
 
-// Handle form submission for adding or deleting reservation
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (isset($_POST["add_reservation"])) {
-        // Process adding reservation form data
-        $user_id = $_POST["user_id"];
-        $apartment_id = $_POST["apartment_id"];
-        $check_in_date = $_POST["check_in_date"];
-        $check_out_date = $_POST["check_out_date"];
-        $price = $_POST["price"];
-        $status = $_POST["status"];
-        
-        // Add the reservation to the database
-        $stmt = $conn->prepare("INSERT INTO reservations (user_id, apartment_id, check_in_date, check_out_date, price, status) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("iissds", $user_id, $apartment_id, $check_in_date, $check_out_date, $price, $status);
-        $stmt->execute();
-        $stmt->close();
-        
-        // Redirect to the reservations.php page after adding reservation
-        header("Location: reservations.php");
+// Function to create a new reservation
+function createReservation($userId, $apartmentId, $checkIn, $checkOut) {
+    global $conn;
+    if (isRoomAvailable($apartmentId, $checkIn, $checkOut)) {
+        $sql = "INSERT INTO reservations (user_id, apartment_id, check_in_date, check_out_date, status) VALUES (?, ?, ?, ?, 'Pending')";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('iiss', $userId, $apartmentId, $checkIn, $checkOut);
+        return $stmt->execute();
+    } else {
+        return false;
+    }
+}
+
+// Function to get reservations for a user
+function getUserReservations($userId) {
+    global $conn;
+    $sql = "SELECT reservations.id, apartments.name AS apartment_name, check_in_date, check_out_date, status 
+            FROM reservations 
+            JOIN apartments ON reservations.apartment_id = apartments.id 
+            WHERE user_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $userId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+// Function to cancel a reservation
+function cancelReservation($reservationId) {
+    global $conn;
+    $sql = "UPDATE reservations SET status = 'Cancelled' WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $reservationId);
+    return $stmt->execute();
+}
+
+// Handle form submissions
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['create_reservation'])) {
+        $userId = $_SESSION['user_id'];
+        $apartmentId = $_POST['apartment_id'];
+        $checkIn = $_POST['check_in'];
+        $checkOut = $_POST['check_out'];
+        if (createReservation($userId, $apartmentId, $checkIn, $checkOut)) {
+            header('Location: reservations.php');
+        } else {
+            echo "<script>alert('The apartment is already booked for the selected dates. Please choose different dates.');</script>";
+        }
         exit();
-    } elseif (isset($_POST["delete_reservation"])) {
-        // Process deleting reservation form data
-        $reservation_id = $_POST["delete_reservation"];
-        
-        // Delete the reservation from the database
-        $stmt = $conn->prepare("DELETE FROM reservations WHERE id = ?");
-        $stmt->bind_param("i", $reservation_id);
-        $stmt->execute();
-        $stmt->close();
-        
-        // Redirect to the reservations.php page after deleting reservation
-        header("Location: reservations.php");
+    } elseif (isset($_POST['cancel_reservation'])) {
+        $reservationId = $_POST['reservation_id'];
+        cancelReservation($reservationId);
+        header('Location: reservations.php');
         exit();
     }
 }
-?>
 
+// Fetch user reservations
+$userId = $_SESSION['user_id'];
+$reservations = getUserReservations($userId);
+
+// Get apartment ID from query parameter if available
+$selectedApartmentId = isset($_GET['apartment_id']) ? intval($_GET['apartment_id']) : null;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | Reservations</title>
-    <link rel="stylesheet" href="css/admin.css">
+    <title>User Reservations</title>
+    <link rel="stylesheet" href="css/reserve.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap">
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="admin.php">Home</a></li>
-                <li><a href="apartments.php">Apartments</a></li>
-                <li><a href="reservations.php">Reservations</a></li>
-                <li><a href="users.php">Users</a></li>
-                <li><a href="backend\logout.php">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
+<header>
+  <nav>
+    <ul>
+      <li><a href="index.php">Home</a></li>
+      <li><a href="rooms.php">Rooms</a></li>
+      <li><a href="#">Amenities</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#">Contact</a></li>
+      <li class="right-buttons">
+        <?php if (!isset($_SESSION['user_id'])) { ?>
+          <a href="login.php" class="loginregisterbutton">Login</a>
+          <a href="register.php" class="loginregisterbutton">Register</a>
+        <?php } else {
+          $query = "SELECT * FROM users WHERE id = '" . $_SESSION['user_id'] . "'";
+          $result = mysqli_query($conn, $query);
+          $row = mysqli_fetch_assoc($result);
+          if ($row['administrator'] == 1) { ?>
+            <a href="admin.php" class="loginregisterbutton">Admin</a>
+          <?php } else { ?>
+            <a href="profile.php">My Profile</a>
+          <?php } ?>
+          <a href="backend/logout.php" class="loginregisterbutton">Logout</a>
+        <?php } ?>
+      </li>
+    </ul>
+  </nav>
+</header>
     <main>
-        <div class="container">
-            <h2>Reservations</h2>
-            <table>
-                <tr>
-                    <th>User ID</th>
-                    <th>Apartment ID</th>
-                    <th>Check-in Date</th>
-                    <th>Check-out Date</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-                <?php while ($row = mysqli_fetch_assoc($result)) { ?>
-                    <tr>
-                        <td><?php echo $row['user_id']; ?></td>
-                        <td><?php echo $row['apartment_id']; ?></td>
-                        <td><?php echo $row['check_in_date']; ?></td>
-                        <td><?php echo $row['check_out_date']; ?></td>
-                        <td><?php echo $row['price']; ?></td>
-                        <td><?php echo $row['status']; ?></td>
-                        <td>
-                            <a href="edit_reservation.php?id=<?php echo $row['id']; ?>">Edit</a>
-                            <form action="reservations.php" method="POST" style="display: inline-block;">
-                                <input type="hidden" name="delete_reservation" value="<?php echo $row['id']; ?>">
-                                <button type="submit">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php } ?>
-            </table>
-            <h2>Add Reservation</h2>
-            <form action="reservations.php" method="POST">
-                <label for="user_id">User ID:</label>
-                <input type="number" id="user_id" name="user_id" required>
-                <label for="apartment_id">Apartment ID:</label>
-                <input type="number" id="apartment_id" name="apartment_id" required>
-                <label for="check_in_date">Check-in Date:</label>
-                <input type="date" id="check_in_date" name="check_in_date" required>
-                <label for="check_out_date">Check-out Date:</label>
-                <input type="date" id="check_out_date" name="check_out_date" required>
-                <label for="price">Price:</label>
-                <input type="number" id="price" name="price" step="0.01" required>
-                <label for="status">Status:</label>
-                <select id="status" name="status" required>
-                    <option value="Pending">Pending</option>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Cancelled">Cancelled</option>
+        <section>
+            <h2>Make a New Reservation</h2>
+            <form action="reservations.php" method="post">
+                <input type="hidden" name="create_reservation" value="1">
+                <label for="apartment">Apartment:</label>
+                <select name="apartment_id" id="apartment" required>
+                    <!-- Populate options dynamically from the database -->
+                    <?php
+                    $apartmentsResult = $conn->query("SELECT id, name FROM apartments");
+                    while ($apartment = $apartmentsResult->fetch_assoc()) {
+                        $selected = $selectedApartmentId === $apartment['id'] ? 'selected' : '';
+                        echo "<option value=\"{$apartment['id']}\" $selected>{$apartment['name']}</option>";
+                    }
+                    ?>
                 </select>
-                <button type="submit" name="add_reservation">Add Reservation</button>
+                <label for="check_in">Check-in Date:</label>
+                <input type="date" name="check_in" id="check_in" required>
+                <label for="check_out">Check-out Date:</label>
+                <input type="date" name="check_out" id="check_out" required>
+                <input type="submit" value="Reserve">
             </form>
-        </div>
+        </section>
+        <section>
+            <h2>Your Current Reservations</h2>
+            <?php if (!empty($reservations)) : ?>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Apartment</th>
+                            <th>Check-in Date</th>
+                            <th>Check-out Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($reservations as $reservation) : ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($reservation['apartment_name']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['check_in_date']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['check_out_date']); ?></td>
+                                <td><?php echo htmlspecialchars($reservation['status']); ?></td>
+                                <td>
+                                    <?php if ($reservation['status'] !== 'Cancelled') : ?>
+                                        <form action="reservations.php" method="post" style="display:inline;">
+                                            <input type="hidden" name="cancel_reservation" value="1">
+                                            <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
+                                            <input type="submit" value="Cancel">
+                                        </form>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else : ?>
+                <p>You have no reservations.</p>
+            <?php endif; ?>
+        </section>
     </main>
     <footer>
-        <p>&copy; 2023 Alifu Hotel. All rights reserved.</p>
+        <p>&copy; 2024 Alifu Hotel</p>
     </footer>
 </body>
 </html>

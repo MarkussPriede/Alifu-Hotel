@@ -14,6 +14,7 @@ if (isset($_POST['login'])) {
         $user = $result->fetch_assoc();
         if (password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
+            $_SESSION['admin'] = $user['administrator'] == 1 ? 'admin' : '';
             header('Location: index.php');
             exit();
         } else {
@@ -70,7 +71,7 @@ $conn->close();
       </section>
     </main>
     <footer>
-      <p>&copy; 2023 Alifu Hotel. All rights reserved.</p>
+      <p>&copy; 2024 Alifu Hotel</p>
     </footer>
   </body>
 </html>

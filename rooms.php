@@ -1,78 +1,80 @@
 <?php
 require_once "db_connection.php";
+session_start();
 
-// Get the sorting option and order from the query string
-$sort = isset($_GET['sort']) ? $_GET['sort'] : '';
-$order = isset($_GET['order']) ? $_GET['order'] : 'asc';
-
-// Prepare the SQL query based on the sorting option and order
-if ($sort === 'price') {
-    $query = "SELECT * FROM apartments ORDER BY price $order";
-} elseif ($sort === 'name') {
-    $query = "SELECT * FROM apartments ORDER BY name $order";
-} else {
-    $query = "SELECT * FROM apartments";
+// if the administrator value of the user is set to 1, set the session variable to "admin"
+if (isset($_SESSION['user_id'])) {
+  $query = "SELECT * FROM users WHERE id = '" . $_SESSION['user_id'] . "'";
+  $result = mysqli_query($conn, $query);
+  $row = mysqli_fetch_assoc($result);
+  if ($row['administrator'] == 1) {
+    $_SESSION['admin'] = "admin";
+  }
 }
-
-// Retrieve apartments from the database
-$result = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rooms | Alifu Hotel</title>
-  <link rel="stylesheet" href="css/rooms.css">
+  <title>Alifu | Our Rooms</title>
+  <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap">
 </head>
 <body>
-  <header>
-    <nav>
-      <ul>
-        <li><a href="index.php">Home</a></li>
-        <li><a href="rooms.php">Rooms</a></li>
-        <li><a href="#">Amenities</a></li>
-        <li><a href="#">Reviews</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+<header>
+  <nav>
+    <ul>
+      <li><a href="index.php">Home</a></li>
+      <li><a href="rooms.php">Rooms</a></li>
+      <li><a href="#">Amenities</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#">Contact</a></li>
+      <li class="right-buttons">
+        <?php if (!isset($_SESSION['user_id'])) { ?>
+          <a href="login.php" class="loginregisterbutton">Login</a>
+          <a href="register.php" class="loginregisterbutton">Register</a>
+        <?php } else {
+          $query = "SELECT * FROM users WHERE id = '" . $_SESSION['user_id'] . "'";
+          $result = mysqli_query($conn, $query);
+          $row = mysqli_fetch_assoc($result);
+          if ($row['administrator'] == 1) { ?>
+            <a href="admin.php" class="loginregisterbutton">Admin</a>
+          <?php } else { ?>
+            <a href="profile.php">My Profile</a>
+          <?php } ?>
+          <a href="backend/logout.php" class="loginregisterbutton">Logout</a>
+        <?php } ?>
+      </li>
+    </ul>
+  </nav>
+</header>
 
-  <main class="main-container">
-    <h2>Our Rooms</h2>
-
-    <div class="sort-form">
-      <form action="rooms.php" method="GET">
-        <label for="sort">Sort By:</label>
-        <select name="sort" id="sort" onchange="this.form.submit()">
-          <option value="">-- Select --</option>
-          <option value="name" <?php if ($sort === 'name') echo 'selected'; ?>>Name</option>
-          <option value="price" <?php if ($sort === 'price') echo 'selected'; ?>>Price</option>
-        </select>
-        <label for="order">Order:</label>
-        <select name="order" id="order" onchange="this.form.submit()">
-          <option value="asc" <?php if ($order === 'asc') echo 'selected'; ?>>Ascending</option>
-          <option value="desc" <?php if ($order === 'desc') echo 'selected'; ?>>Descending</option>
-        </select>
-      </form>
-    </div>
-
+<main id="rooms">
+  <section class="room-list">
+    <h2>Our Apartments</h2>
     <div class="rooms-container">
-      <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+      <?php
+      $apartmentsResult = $conn->query("SELECT id, name, description, price, image_url FROM apartments");
+      while ($apartment = $apartmentsResult->fetch_assoc()) {
+        echo '
         <div class="room-card">
-          <img src="<?php echo $row['image_url']; ?>" alt="<?php echo $row['name']; ?>">
-          <h3><?php echo $row['name']; ?></h3>
-          <p><?php echo $row['description']; ?></p>
-          <p>Price: $<?php echo $row['price']; ?> per night</p>
-          <a href="reservation.php?apartment_id=<?php echo $row['id']; ?>" class="btn">Reserve Now</a>
-        </div>
-      <?php } ?>
+          <img src="' . htmlspecialchars($apartment['image_url']) . '" alt="' . htmlspecialchars($apartment['name']) . '">
+          <h3>' . htmlspecialchars($apartment['name']) . '</h3>
+          <p>' . htmlspecialchars($apartment['description']) . '</p>
+          <p>Price: $' . htmlspecialchars($apartment['price']) . ' per night</p>
+          <a href="reservations.php?apartment_id=' . $apartment['id'] . '" class="button">Book Now</a>
+        </div>';
+      }
+      ?>
     </div>
-  </main>
+  </section>
+</main>
 
-  <footer>
-    <p>&copy; 2023 Alifu Hotel. All rights reserved.</p>
-  </footer>
+<footer>
+  <p>&copy; 2024 Alifu Hotel</p>
+</footer>
+
+<script src="script.js"></script>
 </body>
+</html>

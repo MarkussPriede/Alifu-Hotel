@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <li><a href="#">Amenities</a></li>
           <li><a href="#">Reviews</a></li>
           <li><a href="#">Contact</a></li>
-          <li><a href="backend/logout.php">Logout</a></li>
+          <a href="backend/logout.php" class="loginregisterbutton">Logout</a>
         </ul>
       </nav>
     </header>
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </section>
     </main>
     <footer>
-      <p>&copy; 2023 Alifu Hotel. All rights reserved.</p>
+      <p>&copy; 2024 Alifu Hotel</p>
     </footer>
   </body>
 </html>

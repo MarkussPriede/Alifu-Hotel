@@ -8,11 +8,6 @@ window.onscroll = function () {
 
   if (opacity >= 0) {
     hero.style.opacity = opacity;
-    hero.style.display = "flex";
-  }
-
-  if (opacity <= 0) {
-    hero.style.display = "none";
   }
 
   var newHeight = initialHeroHeight - scrollPos;
@@ -27,3 +22,11 @@ window.onscroll = function () {
 window.onbeforeunload = function () {
   window.scrollTo(0, 0);
 };
+
+document.querySelectorAll("a").forEach((link) => {
+  link.addEventListener("click", function (e) {
+    if (this.getAttribute("href") === "#") {
+      e.preventDefault();
+    }
+  });
+});

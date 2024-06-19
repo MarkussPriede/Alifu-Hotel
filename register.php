@@ -93,7 +93,7 @@ $conn->close();
 </section>
 </main>
 <footer>
-    <p>&copy; 2023 Alifu Hotel. All rights reserved.</p>
+    <p>&copy; 2024 Alifu Hotel</p>
 </footer>
 </body>
 </html>

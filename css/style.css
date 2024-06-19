@@ -1,41 +1,31 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
+/* General Styles */
+body,
+html {
   font-family: "Poppins", sans-serif;
   margin: 0;
-}
-
-ul {
-  list-style: none;
-  margin: 0;
   padding: 0;
-}
-
-a {
-  color: #333;
-  text-decoration: none;
+  background-color: #f9f9f9;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  scroll-behavior: smooth; /* Smooth scrolling */
 }
 
 header {
-  background-color: #fff;
+  background-color: #fff; /* White background for the navigation bar */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1;
-}
-
-nav {
-  margin: 0 auto;
-  padding: 1rem;
+  z-index: 1000; /* Ensure the header is on top */
+  padding: 1rem 2rem;
 }
 
 nav ul {
   display: flex;
   justify-content: flex-end;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 nav ul li {
@@ -48,49 +38,49 @@ nav ul li:first-child {
 
 nav ul li a {
   font-weight: 500;
+  color: #333; /* Dark color for the navigation links */
+  text-decoration: none;
+}
+
+nav ul li a:hover {
+  color: #0071c5; /* Blue color on hover */
 }
 
 .loginregisterbutton {
   background-color: #0071c5;
   color: #fff;
-  padding: 1rem 2rem;
+  padding: 0.5rem 1rem;
   border-radius: 2rem;
   transition: background-color 0.3s ease;
+  text-decoration: none;
+  font-weight: 500;
 }
 
 .loginregisterbutton:hover {
   background-color: #004e8c;
 }
 
-@media (max-width: 768px) {
-  .hero {
-    height: 70vh;
-  }
-}
-
 .hero {
-  background-image: url(/Alifu-Hotel/img/img2edit.jpg);
+  background-image: url("/Alifu-Hotel/img/img2edit.jpg");
   background-position: center;
   background-size: cover;
   height: 50vh;
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: black;
+  color: white;
+  margin-top: 70px; /* Ensure content starts below the fixed header */
 }
 
 .hero h1 {
-  color: white;
   font-size: 3rem;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .hero p {
-  color: white;
   font-size: 1.5rem;
   margin-bottom: 2rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -102,6 +92,7 @@ nav ul li a {
   padding: 1rem 2rem;
   border-radius: 2rem;
   transition: background-color 0.3s ease;
+  text-decoration: none;
 }
 
 .button:hover {
@@ -109,108 +100,131 @@ nav ul li a {
 }
 
 main {
-  margin-top: 40vh;
   padding: 2rem;
   background-color: #fff;
   color: #333;
-  padding-top: 10rem;
+  margin-top: 2rem; /* Ensure main content is not overlapped by the hero section */
 }
 
 h2 {
   font-size: 2rem;
   margin-bottom: 2rem;
+  text-align: center;
 }
 
-.room-list {
+.rooms-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   grid-gap: 2rem;
-  margin-bottom: 2rem;
 }
 
-.room {
+.room-card {
   border: 1px solid #ddd;
+  border-radius: 8px;
   padding: 1rem;
   text-align: center;
+  transition: transform 0.3s ease;
+  background-color: #fff;
 }
 
-.room .button {
-  margin-top: 1.5rem;
+room-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
-.room img {
-  max-width: 80%;
-  height: auto;
-  margin-bottom: 1rem;
-}
-
-.room h3 {
-  font-size: 1.5rem;
-  margin-top: 0.25rem;
-  margin-bottom: 0.5rem;
-}
-
-.room p {
-  font-size: 1.2rem;
-  margin-bottom: 1.5rem;
-}
-
-.amenity-list {
-  justify-content: space-between;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  grid-gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.amenity {
-  text-align: center;
-}
-
-.amenity img {
+.room-card img {
   max-width: 100%;
   height: auto;
+  border-radius: 8px;
   margin-bottom: 1rem;
 }
 
-.amenity h3 {
+room-card h3 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
 }
 
-.amenity p {
+room-card p {
   font-size: 1.2rem;
   margin-bottom: 1rem;
+}
+
+room-card .button {
+  margin-top: 1rem;
+}
+
+.reviews-container {
+  margin-top: 4rem; /* Add space above reviews section */
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .review-list {
-  justify-content: space-between;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  grid-gap: 2rem;
-  margin-bottom: 2rem;
+  width: 55%;
+  display: flex;
+  flex-direction: column;
 }
 
-.review {
+.review-card {
   border: 1px solid #ddd;
   padding: 1rem;
   text-align: center;
+  background-color: #fff; /* White background */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Box shadow */
+  transition: transform 0.3s ease; /* Smooth transform transition */
+  margin-bottom: 1rem; /* Add space between review cards */
 }
 
-.review img {
-  border-radius: 50%;
-  max-width: 40%;
-  height: auto;
+.review-card:hover {
+  transform: translateY(-5px); /* Move up when hovered */
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); /* Darker box shadow when hovered */
 }
 
-.review h3 {
+.review-card h3 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
+  color: #333; /* Dark color for the reviewer's name */
 }
 
-.review p {
+.review-card p {
   font-size: 1.2rem;
   margin-bottom: 1rem;
+  color: #666; /* Slightly lighter color for the review text */
+}
+
+.review-form {
+  width: 40%;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.review-form h3 {
+  text-align: center;
+}
+
+textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 footer {
@@ -230,5 +244,20 @@ footer a {
 
 footer a:hover {
   color: #0071c5;
+  text-decoration: underline;
+}
+
+.login-prompt {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
+
+.login-prompt a {
+  color: #0071c5;
+  text-decoration: none;
+}
+
+.login-prompt a:hover {
   text-decoration: underline;
 }

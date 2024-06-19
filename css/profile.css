@@ -25,14 +25,25 @@ header {
 nav ul {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
 nav ul li {
-  margin-left: 2rem;
+  margin-right: 2rem;
 }
 
-nav ul li:first-child {
-  margin-left: 0;
+.loginregisterbutton {
+  background-color: #0071c5;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.loginregisterbutton:hover {
+  background-color: #004e8c;
 }
 
 nav ul li a {
@@ -62,7 +73,7 @@ input[type="email"],
 input[type="password"],
 input[type="text"] {
   padding: 0.5rem;
-  border: none;
+  border: 1px solid #ccc;
   border-radius: 4px;
   margin-bottom: 1rem;
   width: 100%;
@@ -86,38 +97,6 @@ button:hover {
 .message {
   text-align: center;
 }
-
-/* Login Page Styles */
-
-.login {
-  display: block;
-}
-
-.login form {
-  display: flex;
-  flex-direction: column;
-}
-
-.login .message {
-  margin-top: 1rem;
-}
-
-/* Registration Page Styles */
-
-.register {
-  display: block;
-}
-
-.register form {
-  display: flex;
-  flex-direction: column;
-}
-
-.register .message {
-  margin-top: 1rem;
-}
-
-/* Profile Page Styles */
 
 .profile {
   display: block;
@@ -183,15 +162,15 @@ footer p {
 
 #buttondelete {
   background-color: red;
-  color: #ff0000;
+  color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   margin-bottom: 1rem;
   width: 100%;
   padding: 0.5rem 1rem;
-  margin-top: 1rem;
+  margin-top: 0.2rem;
   margin-bottom: 1rem;
-  margin-left: 1rem;
-  margin-right: 1rem;
+  margin-left: auto;
+  margin-right: auto;
 }
