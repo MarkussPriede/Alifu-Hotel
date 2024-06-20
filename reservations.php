@@ -1,5 +1,10 @@
 <?php
 include 'db_connection.php';
+require 'vendor/autoload.php'; // Ensure this path is correct and the file exists
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 session_start();
 
 // Redirect to login page if user is not logged in
@@ -15,8 +20,8 @@ function isRoomAvailable($apartmentId, $checkIn, $checkOut) {
             WHERE apartment_id = ? 
             AND status != 'Cancelled'
             AND (
-                (check_in_date <= ? AND check_out_date >= ?) 
-                OR (check_in_date <= ? AND check_out_date >= ?)
+                (check_in_date < ? AND check_out_date > ?)
+                OR (check_in_date < ? AND check_out_date > ?)
                 OR (check_in_date >= ? AND check_out_date <= ?)
             )";
     $stmt = $conn->prepare($sql);
@@ -26,26 +31,82 @@ function isRoomAvailable($apartmentId, $checkIn, $checkOut) {
     return $result->num_rows == 0;
 }
 
+// Function to send emails
+function sendEmail($to, $subject, $message, $userName) {
+    $mail = new PHPMailer(true);
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'priedins.markuss@gmail.com'; 
+        $mail->Password = 'ulso yzoy cqhh ghzs'; 
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+
+        // Recipients
+        $mail->setFrom('priedins.markuss@gmail.com', 'Alifu Hotel'); // Replace with your Gmail address
+        $mail->addAddress($to);
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = $subject;
+        $mail->Body = "Dear $userName,<br>$message";
+
+        $mail->send();
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
+}
+
 // Function to create a new reservation
 function createReservation($userId, $apartmentId, $checkIn, $checkOut) {
     global $conn;
+    $userEmail = '';
+    $userName = '';
+    $apartmentName = '';
+
     if (isRoomAvailable($apartmentId, $checkIn, $checkOut)) {
         $sql = "INSERT INTO reservations (user_id, apartment_id, check_in_date, check_out_date, status) VALUES (?, ?, ?, ?, 'Pending')";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('iiss', $userId, $apartmentId, $checkIn, $checkOut);
-        return $stmt->execute();
-    } else {
-        return false;
+        if ($stmt->execute()) {
+            // Fetch user email and name
+            $userResult = $conn->query("SELECT email, name FROM users WHERE id = $userId");
+            if ($userResult->num_rows > 0) {
+                $userRow = $userResult->fetch_assoc();
+                $userEmail = $userRow['email'];
+                $userName = $userRow['name'];
+            }
+
+            // Fetch apartment name
+            $apartmentResult = $conn->query("SELECT name FROM apartments WHERE id = $apartmentId");
+            if ($apartmentResult->num_rows > 0) {
+                $apartmentName = $apartmentResult->fetch_assoc()['name'];
+            }
+
+            // Send confirmation email
+            $subject = "Reservation Confirmation";
+            $message = "Your reservation for the $apartmentName apartment has been created successfully. Check-in Date: $checkIn, Check-out Date: $checkOut.";
+            sendEmail($userEmail, $subject, $message, $userName);
+            return true;
+        }
     }
+    return false;
 }
 
 // Function to get reservations for a user
-function getUserReservations($userId) {
+function getUserReservations($userId, $sort_by = 'check_in_date') {
     global $conn;
+    $valid_sort_columns = ['check_in_date', 'check_out_date', 'status'];
+    if (!in_array($sort_by, $valid_sort_columns)) {
+        $sort_by = 'check_in_date';
+    }
     $sql = "SELECT reservations.id, apartments.name AS apartment_name, check_in_date, check_out_date, status 
             FROM reservations 
             JOIN apartments ON reservations.apartment_id = apartments.id 
-            WHERE user_id = ?";
+            WHERE user_id = ?
+            ORDER BY $sort_by";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $userId);
     $stmt->execute();
@@ -55,36 +116,83 @@ function getUserReservations($userId) {
 // Function to cancel a reservation
 function cancelReservation($reservationId) {
     global $conn;
+    $userEmail = '';
+    $userName = '';
+    $apartmentName = '';
+    $checkIn = '';
+    $checkOut = '';
+
     $sql = "UPDATE reservations SET status = 'Cancelled' WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('i', $reservationId);
-    return $stmt->execute();
+    if ($stmt->execute()) {
+        // Fetch user email, name, and reservation details
+        $reservationResult = $conn->query("SELECT users.email, users.name, reservations.check_in_date, reservations.check_out_date, apartments.name AS apartment_name 
+                                           FROM reservations 
+                                           JOIN users ON reservations.user_id = users.id 
+                                           JOIN apartments ON reservations.apartment_id = apartments.id 
+                                           WHERE reservations.id = $reservationId");
+        if ($reservationResult->num_rows > 0) {
+            $row = $reservationResult->fetch_assoc();
+            $userEmail = $row['email'];
+            $userName = $row['name'];
+            $apartmentName = $row['apartment_name'];
+            $checkIn = $row['check_in_date'];
+            $checkOut = $row['check_out_date'];
+
+            // Send cancellation email
+            $subject = "Reservation Cancelled";
+            $message = "Your reservation for the $apartmentName apartment from $checkIn to $checkOut has been cancelled.";
+            sendEmail($userEmail, $subject, $message, $userName);
+        }
+        return true;
+    }
+    return false;
 }
 
 // Handle form submissions
+$error_message = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['create_reservation'])) {
         $userId = $_SESSION['user_id'];
         $apartmentId = $_POST['apartment_id'];
         $checkIn = $_POST['check_in'];
         $checkOut = $_POST['check_out'];
-        if (createReservation($userId, $apartmentId, $checkIn, $checkOut)) {
-            header('Location: reservations.php');
+
+        // Validate date format and check-in/out logic
+        $currentDate = strtotime(date('Y-m-d'));
+        if (strtotime($checkIn) === false || strtotime($checkOut) === false) {
+            $error_message = "Invalid date format.";
+        } elseif (strtotime($checkIn) >= strtotime($checkOut)) {
+            $error_message = "Check-out date must be after check-in date.";
+        } elseif (strtotime($checkIn) < $currentDate) {
+            $error_message = "Check-in date cannot be in the past.";
+        } elseif (strtotime($checkOut) < $currentDate) {
+            $error_message = "Check-out date cannot be in the past.";
         } else {
-            echo "<script>alert('The apartment is already booked for the selected dates. Please choose different dates.');</script>";
+            if (createReservation($userId, $apartmentId, $checkIn, $checkOut)) {
+                header('Location: reservations.php');
+                exit();
+            } else {
+                $error_message = "The apartment is already booked for the selected dates. Please choose different dates.";
+            }
         }
-        exit();
     } elseif (isset($_POST['cancel_reservation'])) {
         $reservationId = $_POST['reservation_id'];
-        cancelReservation($reservationId);
-        header('Location: reservations.php');
-        exit();
+        if (cancelReservation($reservationId)) {
+            header('Location: reservations.php');
+            exit();
+        } else {
+            $error_message = "Failed to cancel the reservation.";
+        }
     }
 }
 
 // Fetch user reservations
 $userId = $_SESSION['user_id'];
-$reservations = getUserReservations($userId);
+$sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'check_in_date';
+$reservations = getUserReservations($userId, $sort_by);
 
 // Get apartment ID from query parameter if available
 $selectedApartmentId = isset($_GET['apartment_id']) ? intval($_GET['apartment_id']) : null;
@@ -129,6 +237,9 @@ $selectedApartmentId = isset($_GET['apartment_id']) ? intval($_GET['apartment_id
     <main>
         <section>
             <h2>Make a New Reservation</h2>
+            <?php if (!empty($error_message)): ?>
+                <div class="error-message"><?php echo $error_message; ?></div>
+            <?php endif; ?>
             <form action="reservations.php" method="post">
                 <input type="hidden" name="create_reservation" value="1">
                 <label for="apartment">Apartment:</label>
@@ -151,6 +262,14 @@ $selectedApartmentId = isset($_GET['apartment_id']) ? intval($_GET['apartment_id
         </section>
         <section>
             <h2>Your Current Reservations</h2>
+            <div>
+                <label for="sort_by">Sort by:</label>
+                <select id="sort_by" onchange="sortReservations()">
+                    <option value="check_in_date" <?php echo ($sort_by == 'check_in_date') ? 'selected' : ''; ?>>Check-in Date</option>
+                    <option value="check_out_date" <?php echo ($sort_by == 'check_out_date') ? 'selected' : ''; ?>>Check-out Date</option>
+                    <option value="status" <?php echo ($sort_by == 'status') ? 'selected' : ''; ?>>Status</option>
+                </select>
+            </div>
             <?php if (!empty($reservations)) : ?>
                 <table>
                     <thead>
@@ -174,7 +293,7 @@ $selectedApartmentId = isset($_GET['apartment_id']) ? intval($_GET['apartment_id
                                         <form action="reservations.php" method="post" style="display:inline;">
                                             <input type="hidden" name="cancel_reservation" value="1">
                                             <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
-                                            <input type="submit" value="Cancel">
+                                            <input type="submit" class="button" value="Cancel">
                                         </form>
                                     <?php endif; ?>
                                 </td>
@@ -190,5 +309,11 @@ $selectedApartmentId = isset($_GET['apartment_id']) ? intval($_GET['apartment_id
     <footer>
         <p>&copy; 2024 Alifu Hotel</p>
     </footer>
+    <script>
+        function sortReservations() {
+            const sortBy = document.getElementById('sort_by').value;
+            window.location.href = 'reservations.php?sort_by=' + sortBy;
+        }
+    </script>
 </body>
 </html>

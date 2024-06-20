@@ -28,7 +28,7 @@ if (isset($_SESSION['user_id'])) {
       <li><a href="index.php">Home</a></li>
       <li><a href="rooms.php">Rooms</a></li>
       <li><a href="#">Amenities</a></li>
-      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="index.php#reviews">Reviews</a></li>
       <li><a href="#">Contact</a></li>
       <li class="right-buttons">
         <?php if (!isset($_SESSION['user_id'])) { ?>

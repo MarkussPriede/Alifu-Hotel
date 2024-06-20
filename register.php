@@ -49,9 +49,9 @@ $conn->close();
     <nav>
         <ul>
             <li><a href="index.php">Home</a></li>
-            <li><a href="#">Rooms</a></li>
+            <li><a href="rooms.php">Rooms</a></li>
             <li><a href="#">Amenities</a></li>
-            <li><a href="#">Reviews</a></li>
+            <li><a href="index.php#reviews">Reviews</a></li>
             <li><a href="#">Contact</a></li>
         </ul>
     </nav>
